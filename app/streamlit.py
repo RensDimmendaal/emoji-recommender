@@ -2,6 +2,8 @@ import emoji
 import streamlit as st
 import my_module
 
+st.set_page_config(page_icon="🤝")
+
 
 @st.cache
 def get_base():
@@ -13,7 +15,7 @@ load_model = st.cache(allow_output_mutation=True)(my_module.load_model)
 model, tokenizer = load_model()
 base_output = get_base()
 
-st.write("# Emoji Recommender")
+st.write("# 🤝 Emoji Recommender")
 
 user_text = st.text_input("Write here:", "trick or treat")
 
