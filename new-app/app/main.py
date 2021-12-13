@@ -11,7 +11,7 @@ from transformers import AutoModelForMaskedLM, AutoTokenizer
 app = FastAPI()
 
 
-global_init("./templates", auto_reload=True)  # False in prd
+global_init("./app/templates/", auto_reload=True)  # False in prd
 logger = getLogger("gunicorn.error")
 logger.setLevel(INFO)
 
@@ -76,7 +76,16 @@ async def search(input_text: str = Form(...)):
     uuid = str(uuid4())
     answers = emoji_pipeline(input_text)
     logger.info(f"SEARCH|{dumps(dict(input_text=input_text, uuid=uuid))}")
-    return "<ul>" + "".join([f"<li onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</li>" for i, a in enumerate(answers)]) + "</ul>"
+    return (
+        "<ul>"
+        + "".join(
+            [
+                f"<li onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</li>"
+                for i, a in enumerate(answers)
+            ]
+        )
+        + "</ul>"
+    )
 
 
 @app.post("/click", response_class=HTMLResponse)
