@@ -1,0 +1,6 @@
+https://download.pytorch.org/whl/cpu/torch-1.9.0%2Bcpu-cp38-cp38-linux_x86_64.whl
+./external-code/fastapi-chameleon
+emoji==1.2.0
+transformers==4.8.2
+fastapi==0.66.0
+python-multipart==0.0.5

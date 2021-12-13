@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/htmx.org@1.4.1"></script>
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+    <title>Emoji Recommender</title>
+</head>
+
+<body>
+
+    <h1>Emoji Recommender</h1>
+    <span class="htmx-indicator">
+        Searching💃...
+    </span>
+    <input class="form-control" type="text" name="input_text" placeholder="try Trick or treat" hx-post="/search"
+        hx-trigger="keyup changed delay:500ms" hx-target="#search-results" hx-indicator=".htmx-indicator">
+    <div id="search-results">
+    </div>
+
+</body>
+
+</html>

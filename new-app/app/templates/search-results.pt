@@ -1,0 +1,3 @@
+<ul tal:repeat="a answers">
+    <li>"${a}"</li>
+</ul>
