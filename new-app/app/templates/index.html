@@ -4,33 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://unpkg.com/htmx.org@1.4.1"></script>
-    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+    <link rel="stylesheet" href="./app/static/mvp.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/mvp.css"> -->
     <title>Emoji Recommender</title>
 </head>
 
 <body>
 
-    <h1>Emoji Recommender</h1>
-    <span class="htmx-indicator">
-        Searching💃...
-    </span>
-    <input class="form-control" type="text" name="input_text" placeholder="try Trick or treat" hx-post="/search"
-        hx-trigger="keyup changed delay:500ms" hx-target="#search-results" hx-indicator=".htmx-indicator">
-    <div id="search-results">
-    </div>
+    <section>
+        <h1>Emoji Recommender</h1>
+    </section>
+    <section>
+        <span class="htmx-indicator">
+            Searching💃...
+        </span>
+    </section>
+    <section>
+        <input class="form-control" type="text" name="input_text" placeholder="try Trick or treat" hx-post="/search"
+            hx-trigger="keyup changed delay:500ms" hx-target="#search-results" hx-indicator=".htmx-indicator">
+    </section>
+    <section>
+        <i class="hint">
+            Click 👇 to copy ✂️ & paste 📋
+        </i>
+    </section>
+    <section>
+        <div id="search-results">
+        </div>
 
-<script>
-function fnOnClick(emoji, uuid, index) {
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(emoji);
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/click", true);
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send("emoji="+emoji+"&uuid="+uuid+"&index="+index);
-}
-</script>
-
+    </section>
+    <script>
+        function fnOnClick(emoji, uuid, index) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(emoji);
+            }
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/click", true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send("emoji=" + emoji + "&uuid=" + uuid + "&index=" + index);
+        }
+    </script>
 </body>
 
 </html>

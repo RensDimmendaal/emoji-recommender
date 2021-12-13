@@ -5,7 +5,5 @@ README.md
 __pycache__
 .pytest_cache
 serverless.yaml
-index.html
 handler.py
-main.py
 model/

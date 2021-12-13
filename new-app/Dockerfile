@@ -10,5 +10,5 @@ RUN python get_model.py
 
 COPY ./app /app
 
-ENV PORT 8080
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+COPY gunicorn_config.py .
+CMD gunicorn app.main:app -c gunicorn_config.py

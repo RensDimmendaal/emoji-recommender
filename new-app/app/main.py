@@ -3,6 +3,7 @@ from logging import getLogger, INFO
 from uuid import uuid4
 
 import emoji
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from fastapi_chameleon import template, global_init
@@ -10,9 +11,10 @@ from transformers import AutoModelForMaskedLM, AutoTokenizer
 
 app = FastAPI()
 
-
 global_init("./app/templates/", auto_reload=True)  # False in prd
-logger = getLogger("uvicorn.error")
+app.mount("/app/static", StaticFiles(directory="./app/static"), name="static")
+
+logger = getLogger("gunicorn.error")
 logger.setLevel(INFO)
 
 
@@ -77,14 +79,14 @@ async def search(input_text: str = Form(...)):
     answers = emoji_pipeline(input_text)
     logger.info(f"SEARCH|{dumps(dict(input_text=input_text, uuid=uuid))}")
     return (
-        "<ul>"
+        "<div class='emoji-results'>"
         + "".join(
             [
-                f"<li onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</li>"
+                f"<a class='emoji' onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</a>"
                 for i, a in enumerate(answers)
             ]
         )
-        + "</ul>"
+        + "</div>"
     )
 
 
