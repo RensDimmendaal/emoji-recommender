@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from uuid import uuid4
 
 import emoji
 from transformers import AutoModelForMaskedLM, AutoTokenizer
@@ -71,8 +72,15 @@ emoji_pipeline = serverless_pipeline()
 @app.post("/search", response_class=HTMLResponse)
 # async def search(item: Item = Depends(Item.as_form)):
 async def search(input_text: str = Form(...)):
+    uuid = uuid4()
     answers = emoji_pipeline(input_text)
-    return "<ul>" + "".join([f"<li>{a}</li>" for a in answers]) + "</ul>"
+    # TODO: log(input_text, uuid)
+    return "<ul>" + "".join([f"<li onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</li>" for i, a in enumerate(answers)]) + "</ul>"
+
+
+async def click(uuid, emoji, index):
+    pass
+    # TODO: log(uuid, emoji, index)
 
 
 @app.get("/")

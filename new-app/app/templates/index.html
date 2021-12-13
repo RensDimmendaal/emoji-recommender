@@ -19,6 +19,14 @@
     <div id="search-results">
     </div>
 
+<script>
+function fnOnClick(emoji, search_hash, entry) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(emoji);
+    }
+}
+</script>
+
 </body>
 
 </html>
