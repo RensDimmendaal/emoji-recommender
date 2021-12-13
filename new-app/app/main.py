@@ -78,7 +78,8 @@ async def search(input_text: str = Form(...)):
     return "<ul>" + "".join([f"<li onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</li>" for i, a in enumerate(answers)]) + "</ul>"
 
 
-async def click(uuid, emoji, index):
+@app.post("/click", response_class=HTMLResponse)
+async def click(uuid: str = Form(...), emoji: str = Form(...), index: str = Form(...)):
     pass
     # TODO: log(uuid, emoji, index)
 
