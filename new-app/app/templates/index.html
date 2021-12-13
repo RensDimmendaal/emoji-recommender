@@ -19,6 +19,18 @@
     <div id="search-results">
     </div>
 
+<script>
+function fnOnClick(emoji, uuid, index) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(emoji);
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/click", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send("emoji="+emoji+"&uuid="+uuid+"&index="+index);
+}
+</script>
+
 </body>
 
 </html>
