@@ -12,7 +12,7 @@ app = FastAPI()
 
 
 global_init("./app/templates/", auto_reload=True)  # False in prd
-logger = getLogger("gunicorn.error")
+logger = getLogger("uvicorn.error")
 logger.setLevel(INFO)
 
 
