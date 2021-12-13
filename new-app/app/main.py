@@ -1,18 +1,19 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from json import dumps
+from logging import getLogger, INFO
 from uuid import uuid4
 
 import emoji
+from fastapi import FastAPI, Form
+from fastapi.responses import HTMLResponse
+from fastapi_chameleon import template, global_init
 from transformers import AutoModelForMaskedLM, AutoTokenizer
 
 app = FastAPI()
 
-from pydantic import BaseModel
-from fastapi import FastAPI, Form
-from pydantic import BaseModel
-from fastapi_chameleon import template, global_init
 
 global_init("./templates", auto_reload=True)  # False in prd
+logger = getLogger("gunicorn.error")
+logger.setLevel(INFO)
 
 
 def encode(tokenizer, user_text):
@@ -72,16 +73,15 @@ emoji_pipeline = serverless_pipeline()
 @app.post("/search", response_class=HTMLResponse)
 # async def search(item: Item = Depends(Item.as_form)):
 async def search(input_text: str = Form(...)):
-    uuid = uuid4()
+    uuid = str(uuid4())
     answers = emoji_pipeline(input_text)
-    # TODO: log(input_text, uuid)
+    logger.info(f"SEARCH|{dumps(dict(input_text=input_text, uuid=uuid))}")
     return "<ul>" + "".join([f"<li onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</li>" for i, a in enumerate(answers)]) + "</ul>"
 
 
 @app.post("/click", response_class=HTMLResponse)
 async def click(uuid: str = Form(...), emoji: str = Form(...), index: str = Form(...)):
-    pass
-    # TODO: log(uuid, emoji, index)
+    logger.info(f"CLICK|{dumps(dict(uuid=uuid, index=index, emoji=emoji))}")
 
 
 @app.get("/")
