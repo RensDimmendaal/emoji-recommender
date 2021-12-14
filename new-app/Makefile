@@ -20,5 +20,5 @@ deploy:
 		--region europe-west4 \
 		--allow-unauthenticated \
 		--max-instances=1 \
-    --cpu=2 \
+    	--cpu=2 \
 		--memory=8Gi
