@@ -1,6 +1,7 @@
 from json import dumps
 from logging import getLogger, INFO
 from uuid import uuid4
+import numpy as np
 
 import emoji
 from fastapi.staticfiles import StaticFiles
@@ -58,10 +59,18 @@ def serverless_pipeline(model_path="./model"):
         outputs = model(input_ids)[0]
         logits = outputs[0, -2, :]  # last token is start of sentence token
         emoji_proba = logits.softmax(dim=0)[emoji_indices]
-        lift = (emoji_proba / raw_proba).argsort(descending=True)
-        return [emoji_icons[i] for i in lift]
+        lift = (emoji_proba / raw_proba)
+        sort = lift.argsort(descending=True)
+        return np.array(emoji_icons)[sort], lift.detach().numpy()[sort]
 
     return predict
+
+
+def opacity(x, x_break=1, opacity_break=0.8):
+    opacities = np.zeros(len(x))
+    opacities[x > x_break] = opacity_break + (1-opacity_break) * (x[x > x_break] - x_break) / x.max()
+    opacities[x <= x_break] = (x[x <= x_break] / x_break) * opacity_break
+    return opacities
 
 
 # initializes the pipeline
@@ -76,14 +85,16 @@ emoji_pipeline = serverless_pipeline()
 # async def search(item: Item = Depends(Item.as_form)):
 async def search(input_text: str = Form(...)):
     uuid = str(uuid4())
-    answers = emoji_pipeline(input_text)
+    emojis, scores = emoji_pipeline(input_text)
+    opacities = np.round(opacity(scores, x_break=1, opacity_break=0.8), 2)
+
     logger.info(f"SEARCH|{dumps(dict(input_text=input_text, uuid=uuid))}")
     return (
         "<div class='emoji-results'>"
         + "".join(
             [
-                f"<a class='emoji' onclick=\"fnOnClick('{a}', '{uuid}', {i})\">{a}</a>"
-                for i, a in enumerate(answers)
+                f"<a class='emoji' style='opacity:{opacity}' onclick=\"fnOnClick('{emoji}', '{uuid}', {i})\">{emoji}</a>"
+                for i, (emoji, opacity) in enumerate(zip(emojis, opacities))
             ]
         )
         + "</div>"
